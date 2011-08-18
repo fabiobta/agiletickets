@@ -82,21 +82,34 @@ public class Espetaculo {
 
 	public List<Sessao> criaSessoes(LocalDate inicio, LocalDate fim,
 			LocalTime horario, Periodicidade periodicidade) {
-		Sessao snova;
-		LocalDate dataDoDia = inicio;
-				
-		int dias = Days.daysBetween(inicio, fim).getDays();
-		int contaDias = 0;
 		
-		do{
-			snova = new Sessao();
-			snova.setInicio(dataDoDia.toDateTime(horario));
-			dataDoDia = dataDoDia.plusDays(1);
-			sessoes.add(snova);
-			contaDias++;
-		} while(contaDias < dias);
+		int x;
+		int pulo;
+		
+		if(periodicidade.equals(Periodicidade.DIARIA)){
+			pulo = 1;
+		} else if (periodicidade.equals(Periodicidade.SEMANAL)){
+			pulo = 7;
+		} else{
+			pulo = 30;
+		}
+		x = (Days.daysBetween(inicio, fim).getDays() + 1)/pulo;
+		
+		criaSessoes(x, pulo, inicio, horario);
 
 		return sessoes;
 	}
 
+	private void criaSessoes(int nDias, int pulaDias, LocalDate inicio,
+			LocalTime horario) {
+		Sessao snova;
+		LocalDate dataDoDia = inicio;
+
+		for (int i = 0; i < nDias; i++) {
+			snova = new Sessao();
+			snova.setInicio(dataDoDia.toDateTime(horario));
+			dataDoDia = dataDoDia.plusDays(pulaDias);
+			sessoes.add(snova);
+		}
+	}
 }
